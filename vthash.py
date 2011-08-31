@@ -29,7 +29,7 @@ def isFile(file):
         return file
 
 # Your VirusTotal key
-config_file = os.path.expanduser('~/.vtapi.key')
+config_file = os.path.expanduser('~/.vt-tools.conf')
 if (isFile(config_file)):
     try:
         config = ConfigParser.RawConfigParser()
