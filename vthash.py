@@ -14,7 +14,6 @@ url = "https://www.virustotal.com/api/get_file_report.json"
 # The VirusTotal private URL
 #url = "http://api.vtapi.net/vtapi/get_file_reports.json"
 
-
 # Request rate (usually 20 per 5 minutes)
 requests = 300
 sleeptime = 60 * 5 / requests 
@@ -49,6 +48,7 @@ if (isFile(config_file)):
 else:
     print "Configuration file not found at ~/.vtapi.key"
     sys.exit(1)
+
 def showUsage():
     print 'CIRCL Virus Total tools - vthash.py'
     print '    Usage examples:'
@@ -64,6 +64,7 @@ def isHash(hash):
         return None
     else:
         return hash
+
 def outputResult(hash, report):
     print "VirusTotal result for hash:", hash
     if (report == None):
