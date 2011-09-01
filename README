@@ -2,13 +2,22 @@ CIRCL VirusTotal tools
 
 Tools to interact with VirusTotal
 
-All the tools require an API key which needs to be set in the
-configuration file at ~/.vt-tools.conf in the form: 
-	[Global]
-	key = YOURAPIKEY
+All the tools require an API key which you can get 
+from http://www.firustotal.com/ for free for the
+public API.
 
-Get your personal API key from http://www.virustotal.com/
+A configuration file at ~/.vt-tools.conf is mandatory.
+It contains the following: 
+  [Global]
+  key = YOURAPIKEY
+  api = private|public
+
+The private API 
 
 Description of the tools:
 * vthash.py
   send one or multiple hashes (MD5/SHA1) to virustotal
+  and get a human readable list of detections back and
+  some statistics.
+  The --dump option returns the list in a computer 
+  readable format.
