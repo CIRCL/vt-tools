@@ -3,7 +3,7 @@ CIRCL VirusTotal tools
 Tools to interact with VirusTotal
 
 All the tools require an API key which you can get 
-from http://www.firustotal.com/ for free for the
+from http://www.virustotal.com/ for free for the
 public API.
 
 A configuration file at ~/.vt-tools.conf is mandatory.
