@@ -20,14 +20,14 @@ def sendFile(file):
 def showUsage():
     print 'CIRCL Virus Total tools - vtupload.py'
     print '    Usage example: [list of filenames] | ./vtupload.py'
-    print '    Returns VT scan ID\'s for submittet files'
+    print '    Returns VT scan ID\'s for submitted files'
 
 if (sys.stdin.isatty()):
     showUsage()
     sys.exit(1)
 else:
     for file in sys.stdin:
-        print "===\nProcessing file: ", file
+        print "Processing file: ", file
         file = vtlib.isFile(file)
         if (not file):
             print "Not a valid file"
