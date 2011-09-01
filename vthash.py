@@ -7,57 +7,11 @@ import time
 import re
 import os
 import ConfigParser
+sys.path.append('./modules/')
+import vtlib
 
-
-# Request rate (usually 20 per 5 minutes)
-requests = 300
-sleeptime = 60 * 5 / requests 
 regex_md5  = "^[0-9a-f]{32}$"
 regex_sha1 = "^[0-9a-f]{40}$"
-
-def isFile(file):
-    file = file.strip()
-    if (not os.path.isfile(file)):
-        return None
-    else:
-        return file
-
-# Your VirusTotal key
-config_file = os.path.expanduser('~/.vt-tools.conf')
-if (isFile(config_file)):
-    try:
-        config = ConfigParser.RawConfigParser()
-    except Excetion, e:
-        print e
-        sys.exit(2)
-    try:
-        config.read(config_file)
-    except ConfigParser.MissingSectionHeaderError:
-        print "Missing section header [Global] in configuration file"
-        sys.exit(2)
-    try:
-        key = config.get('Global', 'key')
-    except ConfigParser.NoOptionError:
-        print "Missing key = YOURAPIKEY section in configuration file"
-        sys.exit(2)
-    try:
-        api = config.get('Global', 'api')
-    except ConfigParser.NoOptionError:
-        print "Missing api = private|public section in configuration file"
-        sys.exit(2)
-else:
-    print "Configuration file not found at ~/.vtapi.key"
-    sys.exit(1)
-
-if (api == "public"):
-    # The VirusTotal public URL
-    url = "https://www.virustotal.com/api/get_file_report.json"
-elif (api == "private"):
-    # The VirusTotal private URL
-    url = "http://api.vtapi.net/vtapi/get_file_reports.json"
-else:
-    print "Configuration: api = must contain private or public"
-    sys.exit(2)
 
 def showUsage():
     print 'CIRCL Virus Total tools - vthash.py'
@@ -98,10 +52,10 @@ def outputResult(hash, report):
 
 def sendHash(hash, dump):
     parameters = {"resource": hash,
-                "key": key}
+                "key": vtlib.key}
     data = urllib.urlencode(parameters)
     try: 
-        req = urllib2.Request(url, data)
+        req = urllib2.Request(vtlib.url_get, data)
     except HTTPError, e:
         raise e
     except URLError, e:
@@ -136,12 +90,8 @@ def processHash(hash, dump):
                 print "API key not valid. Please check."
         except Exception, e:
             print "Hash failed: " + hash + ": ", str(e)
-    time.sleep(sleeptime)
+    time.sleep(vtlib.sleeptime)
 
-if (key == ""):
-    print "In order to make this work, request an API key from VirusTotal"
-    print "and paste it as value for the 'key' variable in the configuration file."
-    sys.exit(2)
 if (sys.stdin.isatty()):
     if (len(sys.argv) < 2):
         showUsage()
