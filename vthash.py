@@ -8,11 +8,6 @@ import re
 import os
 import ConfigParser
 
-# The VirusTotal public URL
-url = "https://www.virustotal.com/api/get_file_report.json"
-
-# The VirusTotal private URL
-#url = "http://api.vtapi.net/vtapi/get_file_reports.json"
 
 # Request rate (usually 20 per 5 minutes)
 requests = 300
@@ -45,9 +40,24 @@ if (isFile(config_file)):
     except ConfigParser.NoOptionError:
         print "Missing key = YOURAPIKEY section in configuration file"
         sys.exit(2)
+    try:
+        api = config.get('Global', 'api')
+    except ConfigParser.NoOptionError:
+        print "Missing api = private|public section in configuration file"
+        sys.exit(2)
 else:
     print "Configuration file not found at ~/.vtapi.key"
     sys.exit(1)
+
+if (api == "public"):
+    # The VirusTotal public URL
+    url = "https://www.virustotal.com/api/get_file_report.json"
+elif (api == "private"):
+    # The VirusTotal private URL
+    url = "http://api.vtapi.net/vtapi/get_file_reports.json"
+else:
+    print "Configuration: api = must contain private or public"
+    sys.exit(2)
 
 def showUsage():
     print 'CIRCL Virus Total tools - vthash.py'
@@ -93,12 +103,8 @@ def sendHash(hash, dump):
     try: 
         req = urllib2.Request(url, data)
     except HTTPError, e:
-        print "The server couldn't fulfill the request."
-        print "Error code: ", e.code
         raise e
     except URLError, e:
-        print "The server couldn't be reached."
-        print "Error: ", e.reason
         raise e
     response = urllib2.urlopen(req)
     json = response.read()
@@ -125,6 +131,9 @@ def processHash(hash, dump):
     else:
         try:
             sendHash(hash, dump)
+        except urllib2.HTTPError, e:
+            if (e.code == 403): 
+                print "API key not valid. Please check."
         except Exception, e:
             print "Hash failed: " + hash + ": ", str(e)
     time.sleep(sleeptime)
