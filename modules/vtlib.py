@@ -11,6 +11,7 @@ def isFile(file):
 
 # Your VirusTotal key
 config_file = os.path.expanduser('~/.vt-tools.conf')
+
 if (isFile(config_file)):
     try:
         config = ConfigParser.RawConfigParser()
@@ -40,6 +41,8 @@ if (isFile(config_file)):
 else:
     print "Configuration file not found at ~/.vtapi.key"
     sys.exit(1)
+
+sleeptime = 60 * 5 / requests
 
 if (api == "public"):
     # The VirusTotal public URL
