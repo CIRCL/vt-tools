@@ -14,7 +14,7 @@ upon request.
 
 ## Configuration
 A configuration file at ~/.vt-tools.conf is mandatory.  
-It contains the following: 
+It contains the following:   
     [Global]
     key = YOURAPIKEY
     api = public 	# or private
@@ -29,12 +29,12 @@ An example configuration file is included.
   some statistics.
   The --dump option returns the list in a computer 
   readable format.
-  Example: md5 test/* | cut -d"=" -f2 | vthash.py
+    * Example: md5 test/* | cut -d"=" -f2 | vthash.py
 
 * vtupload.py
     * send one or more files to VirusTotal. Returns a unique
   ID to requests the report later. Scan might need some
   time. Instead of getting the report, using vthash.py
   after uploading does work, too.
-  Example: ls test/* | vtupload.py
+    * Example: ls test/* | vtupload.py
 
