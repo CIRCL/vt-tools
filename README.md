@@ -14,7 +14,8 @@ upon request.
 
 ## Configuration
 A configuration file at ~/.vt-tools.conf is mandatory.  
-It contains the following:   
+It contains the following: 
+  
     [Global]
     key = YOURAPIKEY
     api = public 	# or private
