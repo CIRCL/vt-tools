@@ -39,28 +39,57 @@ def isHash(hash):
 
 def outputResult(hash, report):
     print "VirusTotal result for hash:", hash
-    if (report == None):
-        print "Not uploaded, yet"
-    else:
-        scan_time    = report[0]
-        scan_results = report[1]
-        scan_entries = len(scan_results)
-        detections = 0
-        for product, detection in scan_results.iteritems(): 
-            if (detection != ""):
-                if (len(product) > 11):
-                    print product + ":\t" + detection
-                elif (len(product) > 6):
-                    print product + ":\t\t" + detection
-                else:
-                    print product + ":\t\t\t" + detection
-                detections += 1
-        percent = round(detections * 100 / int(scan_entries)) 
-        print "Scanned: " + str(scan_time) + " - " + str(scan_entries) + " scans - " + str(detections) + " detections (" + str(percent) + "%)"
+    if (vtlib.api == "public"):
+        if (report == None):
+            print "Not uploaded, yet"
+        else:
+            scan_time    = report[0]
+            scan_results = report[1]
+            scan_entries = len(scan_results)
+            detections = 0
+            for product, detection in scan_results.iteritems(): 
+                if (detection != ""):
+                    if (len(product) > 11):
+                        print product + ":\t" + detection
+                    elif (len(product) > 6):
+                        print product + ":\t\t" + detection
+                    else:
+                        print product + ":\t\t\t" + detection
+                    detections += 1
+            percent = round(detections * 100 / int(scan_entries)) 
+            print "Scanned: " + str(scan_time) + " - " + str(scan_entries) + " scans - " + str(detections) + " detections (" + str(percent) + "%)"
+    elif (vtlib.api == "private"):
+        if (report.get('result') == 0):
+            print "Not uploaded, yet"
+        else:
+            report_hash     = report.get('report-hash')
+            report_link     = report.get('permalink')
+            report_resource = report.get('resource')
+            report_result   = report.get('result')
+            report_reports  = report.get('report')
+            report_datetime = report.get('report-datetime')
+            scan_entries = len(report_reports)
+            detections = 0
+            print "Link: ", report_link
+            for product, detection in report_reports.iteritems():
+                if (detection != None):
+                    if (len(product) > 11):
+                        print product + ":\t" + detection
+                    elif (len(product) > 6):
+                        print product + ":\t\t" + detection
+                    else:
+                        print product + ":\t\t\t" + detection
+                    detections += 1
+            percent = round(detections * 100 / int(scan_entries))
+            print "Scanned: " + str(report_datetime) + " - " + str(scan_entries) + " scans - " + str(detections) + " detections (" + str(percent) + "%)"
 
 def sendHash(hash, dump):
-    parameters = {"resource": hash,
-                "key": vtlib.key}
+    if (vtlib.api == "public"):
+        parameters = {"resource": hash,
+                    "key": vtlib.key}
+    elif (vtlib.api == "private"):
+        parameters = {"resources": hash,
+                      "apikey": vtlib.key}
     data = urllib.urlencode(parameters)
     try: 
         req = urllib2.Request(vtlib.url_get, data)
@@ -71,14 +100,24 @@ def sendHash(hash, dump):
     response = urllib2.urlopen(req)
     json = response.read()
     response_dict = simplejson.loads(json)
-    if (dump):
-        print hash, "=", response_dict.get("report")
-    else:
-        report = response_dict.get("report")
-        if (report == None):
-            outputResult(hash, None)
+    if (vtlib.api == "public"):
+        if (dump):
+            print hash, "=", response_dict.get("report")
         else:
-            outputResult(hash, report)
+            report = response_dict.get("report")
+            if (report == None):
+                outputResult(hash, None)
+            else:
+                outputResult(hash, report)
+    elif (vtlib.api == "private"):
+        if (dump):
+            print hash, "=", response_dict
+        else:
+            report = response_dict[0]
+            if (report == None):
+                outputResult(hash, None)
+            else:
+                outputResult(hash, report)
 
 def processHash(hash, dump):
     orig_hash = hash
