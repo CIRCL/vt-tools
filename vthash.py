@@ -1,4 +1,12 @@
 #!/usr/bin/python
+#
+# vt-tools: vthash.py
+# Licensed under the GNU General Public License v3
+# (C) 2011, CIRCL, Smile GIE
+# (C) Sascha Rommelfangen
+# http://www.circl.lu
+# https://github.com/CIRCL/vt-tools
+
 import simplejson
 import urllib
 import urllib2
