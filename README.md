@@ -39,3 +39,15 @@ An example configuration file is included.
   after uploading does work, too.
     * Example: ls test/* | vtupload.py
 
+## Licenses
+All files except those listed below are licensed under the 
+GNU General Public License v3
+(C) 2011, CIRCL, Smile GIE
+(C) Sascha Rommelfangen
+http://www.circl.lu
+https://github.com/CIRCL/vt-tools
+
+Exception: postfile.py is a contribution from http://code.activestate.com/recipes/146306/
+This file is licensed under PSF License, which is compatible with the GPL
+
+
