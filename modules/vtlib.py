@@ -59,7 +59,7 @@ if (api == "public"):
     url_scan = "http://www.virustotal.com/api/scan_file.json"
 elif (api == "private"):
     # The VirusTotal private URL
-    url_get = "http://api.vtapi.net/vtapi/get_file_reports.json"
+    url_get = "http://api.vtapi.net/vtapi/get_file_infos.json"
 else:
     print "Configuration: api = must contain private or public"
     sys.exit(2)
