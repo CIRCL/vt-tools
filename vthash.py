@@ -39,7 +39,7 @@ def isHash(hash):
 
 def outputResult(hash, report):
     print "VirusTotal result for hash:", hash
-    if (vtlib.api == "public"):
+    if (api == "public"):
         if (report == None):
             print "Not uploaded, yet"
         else:
@@ -58,36 +58,61 @@ def outputResult(hash, report):
                     detections += 1
             percent = round(detections * 100 / int(scan_entries)) 
             print "Scanned: " + str(scan_time) + " - " + str(scan_entries) + " scans - " + str(detections) + " detections (" + str(percent) + "%)"
-    elif (vtlib.api == "private"):
+    elif (api == "private"):
         if (report.get('result') == 0):
             print "Not uploaded, yet"
         else:
-            report_hash     = report.get('report-hash')
-            report_link     = report.get('permalink')
-            report_resource = report.get('resource')
-            report_result   = report.get('result')
-            report_reports  = report.get('report')
-            report_datetime = report.get('report-datetime')
+            report_link      = report.get('last-scan-permalink')
+            report_resource  = report.get('resource')
+            report_result    = report.get('result')
+            report_reports   = report.get('last-scan-report')
+            report_firstseen = report.get('first-seen')
+            report_lastseen  = report.get('last-seen')
+            report_size      = report.get('size')
+            report_filenames = report.get('filenames')
+            report_unique_submissions = report.get('unique-submissions')
+            report_tags      = report.get('tags')
             scan_entries = len(report_reports)
             detections = 0
             print "Link: ", report_link
+            repfilesout = "Reported filenames:\t"
+            if (report_filenames != None):
+                for filename in report_filenames:
+                    repfilesout += filename
+            else:
+                repfilesout += "-"
+            print repfilesout
+            print "Size:\t\t\t", report_size
+            print "Unique submissions:\t", report_unique_submissions
+            utout = "VT-user tags:\t\t"
+            if (len(report_tags) != 0):
+                for tag in report_tags:
+                    utout += tag
+            else:
+                utout += "-"
+            print utout
             for product, detection in report_reports.iteritems():
-                if (detection != None):
+                malware   = detection[0]
+                signature = detection[1]
+                date      = detection[2]
+                if (malware != None):
                     if (len(product) > 11):
-                        print product + ":\t" + detection
+                        print product + ":\t" + malware + "\t(" + signature + " from " + date + ")"
                     elif (len(product) > 6):
-                        print product + ":\t\t" + detection
+                        print product + ":\t\t" + malware + "\t(" + signature + " from " + date + ")"
                     else:
-                        print product + ":\t\t\t" + detection
+                        print product + ":\t\t\t" + malware + "\t(" + signature + " from " + date + ")"
                     detections += 1
             percent = round(detections * 100 / int(scan_entries))
-            print "Scanned: " + str(report_datetime) + " - " + str(scan_entries) + " scans - " + str(detections) + " detections (" + str(percent) + "%)"
+            print "Statistics:\t\t" + str(scan_entries) + " scans - " + str(detections) + " detections (" + str(percent) + "%)"
+            print "First seen:\t\t" + str(report_firstseen)
+            print "Last seen:\t\t" + str(report_lastseen)
 
 def sendHash(hash, dump):
-    if (vtlib.api == "public"):
+    if (api == "public"):
         parameters = {"resource": hash,
                     "key": vtlib.key}
-    elif (vtlib.api == "private"):
+    elif (api == "private"):
         parameters = {"resources": hash,
                       "apikey": vtlib.key}
     data = urllib.urlencode(parameters)
@@ -100,7 +125,7 @@ def sendHash(hash, dump):
     response = urllib2.urlopen(req)
     json = response.read()
     response_dict = simplejson.loads(json)
-    if (vtlib.api == "public"):
+    if (api == "public"):
         if (dump):
             print hash, "=", response_dict.get("report")
         else:
@@ -109,7 +134,7 @@ def sendHash(hash, dump):
                 outputResult(hash, None)
             else:
                 outputResult(hash, report)
-    elif (vtlib.api == "private"):
+    elif (api == "private"):
         if (dump):
             print hash, "=", response_dict
         else:
@@ -138,6 +163,11 @@ def processHash(hash, dump):
         except Exception, e:
             print "Hash failed: " + hash + ": ", str(e)
     time.sleep(vtlib.sleeptime)
+
+if (sys.argv[0] == "vthash-pro.py"):
+    api = "private"
+else:
+    api = "public"
 
 if (sys.stdin.isatty()):
     if (len(sys.argv) < 2):
