@@ -31,7 +31,8 @@ An example configuration file is included.
   The --dump option returns the list in a computer 
   readable format.
     * Example: md5 test/* | cut -d"=" -f2 | vthash.py
-
+* vthash-pro.py
+    * same as vthash.py (just a symlink) but uses the private API of VirusTotal
 * vtupload.py
     * send one or more files to VirusTotal. Returns a unique
   ID to requests the report later. Scan might need some
@@ -41,13 +42,13 @@ An example configuration file is included.
 
 ## Licenses
 All files except those listed below are licensed under the 
-GNU General Public License v3
-(C) 2011, CIRCL, Smile GIE
-(C) Sascha Rommelfangen
-http://www.circl.lu
-https://github.com/CIRCL/vt-tools
+GNU General Public License v3  
+(C) 2011, CIRCL, Smile GIE  
+(C) Sascha Rommelfangen  
+http://www.circl.lu  
+https://github.com/CIRCL/vt-tools  
 
-Exception: postfile.py is a contribution from http://code.activestate.com/recipes/146306/
-This file is licensed under PSF License, which is compatible with the GPL
+Exception: postfile.py is a contribution from http://code.activestate.com/recipes/146306/  
+This file is licensed under PSF License, which is compatible with the GPL  
 
 
