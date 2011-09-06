@@ -19,10 +19,10 @@ import vtlib
 
 def sendFile(file):
     host = "www.virustotal.com"
-    fields = [("key", vtlib.key)]
+    fields = [("key", vtlib.public_key)]
     file_to_send = open(file, "rb").read()
     files = [("file", file, file_to_send)]
-    json = vtlib.postfile.post_multipart(host, vtlib.url_scan, fields, files)
+    json = vtlib.postfile.post_multipart(host, vtlib.public_url_scan, fields, files)
     print json
 
 def showUsage():
@@ -44,5 +44,4 @@ else:
                 sendFile(file)
             except Exception, e:
                 print "File failed: " + file + ": ", e
-        time.sleep(vtlib.sleeptime)
 sys.exit(0)
