@@ -17,9 +17,12 @@ A configuration file at ~/.vt-tools.conf is mandatory.
 It contains the following: 
   
     [Global]
-    key = YOURAPIKEY
-    api = public 	# or private
-    requests = 20	# or higher, like 300
+    public = True
+    private = True
+    public_key  = YOURPUBLICAPIKEY
+    private_key = YOURPRIVATEAPIKEY
+    public_requests = 20	# default
+    private_requests = 300	# default
 
 An example configuration file is included.
 
@@ -32,7 +35,7 @@ An example configuration file is included.
   readable format.
     * Example: md5 test/* | cut -d"=" -f2 | vthash.py
 * vthash-pro.py
-    * same as vthash.py (just a symlink) but uses the private API of VirusTotal
+    * same as vthash.py (just a symlink) but uses the private API of VirusTotal (which gives much more information)
 * vtupload.py
     * send one or more files to VirusTotal. Returns a unique
   ID to requests the report later. Scan might need some
