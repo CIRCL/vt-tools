@@ -66,6 +66,7 @@ def outputResult(hash, report):
             report_resource  = report.get('resource')
             report_result    = report.get('result')
             report_reports   = report.get('last-scan-report')
+            report_tool_info = report.get('tool-info')
             report_firstseen = report.get('first-seen')
             report_lastseen  = report.get('last-seen')
             report_size      = report.get('size')
@@ -91,12 +92,45 @@ def outputResult(hash, report):
             else:
                 utout += "-"
             print utout
+            print "First seen:\t\t" + str(report_firstseen)
+            print "Last seen:\t\t" + str(report_lastseen)
+            # Debug output:
+            # print report_tool_info
+            if (report_tool_info.get('trid') != None):
+                print "File info:"
+                print report_tool_info.get('trid')
+            if (report_tool_info.get('sections') != None):
+                print "Sections:"
+                print "Section\t\tVirt. Address\tVirt. Size\tRaw Size\tEntropy\tMD5"
+                for a, b, c, d, e, f in report_tool_info.get('sections'):
+                    print a + "\t\t" + b + "\t\t" + c + "\t\t" + d + "\t\t" + e + "\t" + f
+            if (report_tool_info.get('sigcheck') != None):
+                print "Signature check:"
+                for key, value in report_tool_info.get('sigcheck').iteritems():
+                    print "  " + key + ":\t\t" + value
+            if (report_tool_info.get('imports') != None):
+                print "Imports:"
+                for key, value in report_tool_info.get('imports').iteritems():
+                    impout = "  " + key + ":\t\t"
+                    for function in value:
+                        impout += function + ", "
+                    print impout
+            if (report_tool_info.get('exiftool') != None):
+                print "Exiftools:"
+                for key, value in report_tool_info.get('exiftool').iteritems():
+                    if ((value != None) and (value != "")):
+                        if (len(key) > 11):
+                            print "  " + key + ":\t" + value
+                        elif (len(key) > 5):
+                            print "  " + key + ":\t\t" + value
+                        elif (len(key) > 3):
+                            print "  " + key + ":\t\t\t" + value
             for product, detection in report_reports.iteritems():
                 malware   = detection[0]
                 signature = detection[1]
                 date      = detection[2]
                 if (malware != None):
-                    if (len(product) > 11):
+                    if (len(product) > 13):
                         print product + ":\t" + malware + "\t(" + signature + " from " + date + ")"
                     elif (len(product) > 6):
                         print product + ":\t\t" + malware + "\t(" + signature + " from " + date + ")"
@@ -105,23 +139,25 @@ def outputResult(hash, report):
                     detections += 1
             percent = round(detections * 100 / int(scan_entries))
             print "Statistics:\t\t" + str(scan_entries) + " scans - " + str(detections) + " detections (" + str(percent) + "%)"
-            print "First seen:\t\t" + str(report_firstseen)
-            print "Last seen:\t\t" + str(report_lastseen)
 
 def sendHash(hash, dump):
     if (api == "public"):
         parameters = {"resource": hash,
-                    "key": vtlib.key}
+                    "key": vtlib.public_key}
     elif (api == "private"):
         parameters = {"resources": hash,
-                      "apikey": vtlib.key}
+                      "apikey": vtlib.private_key}
     data = urllib.urlencode(parameters)
-    try: 
-        req = urllib2.Request(vtlib.url_get, data)
-    except HTTPError, e:
-        raise e
-    except URLError, e:
-        raise e
+    if (api == "public"):
+        try: 
+            req = urllib2.Request(vtlib.public_url_get, data)
+        except Exception, e:
+            raise e
+    if (api == "private"):
+        try: 
+            req = urllib2.Request(vtlib.private_url_get, data)
+        except Exception, e:
+            raise e
     response = urllib2.urlopen(req)
     json = response.read()
     response_dict = simplejson.loads(json)
@@ -162,12 +198,20 @@ def processHash(hash, dump):
                 print "API key not valid. Please check."
         except Exception, e:
             print "Hash failed: " + hash + ": ", str(e)
-    time.sleep(vtlib.sleeptime)
+    time.sleep(sleeptime)
 
 if (sys.argv[0] == "vthash-pro.py"):
     api = "private"
+    if (not vtlib.private):
+        print "Please check configuration for private API"
+        sys.exit(2)
+    sleeptime = vtlib.private_sleeptime
 else:
     api = "public"
+    if (not vtlib.public):
+        print "Please check configuration for public API"
+        sys.exit(2)
+    sleeptime = vtlib.public_sleeptime
 
 if (sys.stdin.isatty()):
     if (len(sys.argv) < 2):
