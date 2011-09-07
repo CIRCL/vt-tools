@@ -79,7 +79,7 @@ def outputResult(hash, report):
             repfilesout = "Reported filenames:\t"
             if (report_filenames != None):
                 for filename in report_filenames:
-                    repfilesout += filename
+                    repfilesout += filename + ", "
             else:
                 repfilesout += "-"
             print repfilesout
@@ -95,8 +95,8 @@ def outputResult(hash, report):
             print "First seen:\t\t" + str(report_firstseen)
             print "Last seen:\t\t" + str(report_lastseen)
             # Debug output:
-            # print report_tool_info
-            if (report_tool_info.get('trid') != None):
+            #print report_tool_info
+            if (report_tool_info.get('trid') != None): 
                 print "File info:"
                 print report_tool_info.get('trid')
             if (report_tool_info.get('sections') != None):
@@ -119,12 +119,17 @@ def outputResult(hash, report):
                 print "Exiftools:"
                 for key, value in report_tool_info.get('exiftool').iteritems():
                     if ((value != None) and (value != "")):
-                        if (len(key) > 11):
+                        if (len(key) > 12):
                             print "  " + key + ":\t" + value
                         elif (len(key) > 5):
                             print "  " + key + ":\t\t" + value
                         elif (len(key) > 3):
                             print "  " + key + ":\t\t\t" + value
+            
+            if (report_tool_info.get('deepguard') != None): 
+                print "Deepguard info:\t\t" + report_tool_info.get('deepguard')
+            if (report_tool_info.get('suspicious-insight') != None): 
+                print "Suspicious-insight:\t" + str(report_tool_info.get('suspicious-insight'))
             for product, detection in report_reports.iteritems():
                 malware   = detection[0]
                 signature = detection[1]
