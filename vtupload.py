@@ -14,8 +14,15 @@ import sys
 import time
 import re
 import os
-sys.path.append('./modules/')
-import vtlib 
+
+def guesspath():
+    pp = os.path.realpath(sys.argv[0])
+    lpath = os.path.split(pp)
+    return lpath[0]
+
+modulespath = guesspath() + "/modules/"
+sys.path.append(modulespath)
+import vtlib
 
 def sendFile(file):
     host = "www.virustotal.com"
