@@ -15,7 +15,14 @@ import time
 import re
 import os
 import ConfigParser
-sys.path.append('./modules/')
+
+def guesspath():
+    pp = os.path.realpath(sys.argv[0])
+    lpath = os.path.split(pp)
+    return lpath[0]
+
+modulespath = guesspath() + "/modules/"
+sys.path.append(modulespath)
 import vtlib
 
 regex_md5  = "^[0-9a-f]{32}$"
