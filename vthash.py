@@ -25,8 +25,8 @@ modulespath = guesspath() + "/modules/"
 sys.path.append(modulespath)
 import vtlib
 
-regex_md5  = "^[0-9a-f]{32}$"
-regex_sha1 = "^[0-9a-f]{40}$"
+regex_md5  = "^[0-9a-fA-F]{32}$"
+regex_sha1 = "^[0-9a-fA-F]{40}$"
 
 def showUsage():
     print 'CIRCL Virus Total tools - vthash.py'
