@@ -10,6 +10,7 @@
 import os
 import ConfigParser
 import postfile
+import sys
 
 def isFile(file):
     file = file.strip()
@@ -23,7 +24,7 @@ config_file = os.path.expanduser('~/.vt-tools.conf')
 
 public  = False
 private = False
-public_sleeptime  = 15 
+public_sleeptime  = 15
 private_sleeptime = 1
 
 if (isFile(config_file)):
@@ -37,10 +38,10 @@ if (isFile(config_file)):
     except ConfigParser.MissingSectionHeaderError:
         print "Missing section header [Global] in configuration file"
         sys.exit(2)
-    try: 
+    try:
         public = config.get('Global', 'public')
     except:
-       pass 
+       pass
     if (public):
         try:
             public_key = config.get('Global', 'public_key')
@@ -73,5 +74,5 @@ if (isFile(config_file)):
         private_sleeptime = 60 * 5 / private_requests
         private_url_get = "http://api.vtapi.net/vtapi/get_file_infos.json"
 else:
-    print "Configuration file not found at ~/.vtapi.key"
+    print "Configuration file not found at ~/.vt-tools.conf"
     sys.exit(1)
